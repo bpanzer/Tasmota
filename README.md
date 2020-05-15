@@ -5,7 +5,7 @@ Here are just the enhancements described.
 
 ## Goal and usage:
 
-The original Tasmota firmware intentionally doesn't offer a standalone-mode which runs an AP permanantly. 
+The original Tasmota firmware intentionally doesn't offer a standalone-mode which runs an AP permanently. 
 Thus I created this fork as I long for such an operation mode (I call it WIFI_PERM_AP).
 
 This fork keeps all original Tasmota functionality intact (including firmware updates, also OTA updates). 
