@@ -638,7 +638,7 @@ void StopWebserver(void)
   }
 }
 
-void WifiManagerBegin(bool reset_only)
+void WifiManagerBegin(bool reset_only, bool admin_mode)
 {
   // setup AP
   if (!global_state.wifi_down) {
@@ -660,10 +660,18 @@ void WifiManagerBegin(bool reset_only)
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_3_0
   // bool softAP(const char* ssid, const char* passphrase = NULL, int channel = 1, int ssid_hidden = 0);
-  WiFi.softAP(my_hostname, WIFI_AP_PASSPHRASE, channel, 0);
+  if (admin_mode) {  
+    WiFi.softAP(my_hostname, WIFI_AP_PASSPHRASE, channel, 0);
+  } else {
+    WiFi.softAP(my_hostname, EMPTY_STR, channel, 0);
+  }
 #else
   // bool softAP(const char* ssid, const char* passphrase = NULL, int channel = 1, int ssid_hidden = 0, int max_connection = 4);
-  WiFi.softAP(my_hostname, WIFI_AP_PASSPHRASE, channel, 0, 1);
+  if (admin_mode) {
+    WiFi.softAP(my_hostname, WIFI_AP_PASSPHRASE, channel, 0, 5);
+  } else {
+    WiFi.softAP(my_hostname, EMPTY_STR, channel, 0, 1);
+  }
 #endif
 
   delay(500); // Without delay I've seen the IP address blank
@@ -671,7 +679,11 @@ void WifiManagerBegin(bool reset_only)
   DnsServer->setErrorReplyCode(DNSReplyCode::NoError);
   DnsServer->start(DNS_PORT, "*", WiFi.softAPIP());
 
-  StartWebserver((reset_only ? HTTP_MANAGER_RESET_ONLY : HTTP_MANAGER), WiFi.softAPIP());
+  if (admin_mode) {
+    StartWebserver(HTTP_ADMIN, WiFi.softAPIP());
+  } else {
+    StartWebserver((reset_only ? HTTP_MANAGER_RESET_ONLY : HTTP_MANAGER), WiFi.softAPIP());
+  }
 }
 
 void PollDnsWebserver(void)

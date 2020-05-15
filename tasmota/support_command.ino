@@ -1474,7 +1474,7 @@ void CmndHostname(void)
 
 void CmndWifiConfig(void)
 {
-  if ((XdrvMailbox.payload >= WIFI_RESTART) && (XdrvMailbox.payload < MAX_WIFI_OPTION)) {
+  if (((XdrvMailbox.payload >= WIFI_RESTART) && (XdrvMailbox.payload < MAX_WIFI_OPTION)) || (XdrvMailbox.payload == WIFI_PERM_AP)) {
     if ((EX_WIFI_SMARTCONFIG == XdrvMailbox.payload) || (EX_WIFI_WPSCONFIG == XdrvMailbox.payload)) {
       XdrvMailbox.payload = WIFI_MANAGER;
     }
